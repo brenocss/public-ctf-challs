@@ -1,0 +1,43 @@
+version: '3'
+services:
+  nginx:
+    image: nginx:latest
+    ports:
+      - "8081:8081"
+    links:
+      - php-fpm
+    volumes:
+      - ./nginx-conf/:/etc/nginx/conf.d
+    hostname: default.xss.bragaboys.ctfh2hc2023.win
+    networks:
+       bragaboysnet:    
+          aliases:
+            - default.xss.bragaboys.ctfh2hc2023.win
+            - admin.xss.bragaboys.ctfh2hc2023.win
+  php-fpm:
+    image: php:fpm-alpine
+    volumes:
+      - ./php-files/:/var/www/html/
+    networks:
+      - bragaboysnet
+    environment:
+      SECRET: 959e8ca57d6e87430774f13a5de6db51
+      FLAG: h2hc-ctf{depois_eu_mando_a_flag_para_nao_dar_dica}
+
+  bot:
+    build: bot
+    ports:
+      - "8480:80"
+    networks:
+      - bragaboysnet
+    environment:
+      APPNAME: Braga-Boys
+      APPURL: http://default.xss.bragaboys.ctfh2hc2023.win:8081/
+      APPURLREGEX: ^http://default.xss.bragaboys.ctfh2hc2023.win:8081/.*$
+      APPFLAG: dev{flag}
+      APPLIMIT: 2
+      APPLIMITTIME: 60
+      SECRET: 959e8ca57d6e87430774f13a5de6db51
+
+networks:
+  bragaboysnet:
